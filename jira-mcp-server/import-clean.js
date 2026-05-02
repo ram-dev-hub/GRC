@@ -9,23 +9,28 @@
  * Usage: node import-clean.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
-const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Load environment variables
 require('dotenv').config({ path: path.join(__dirname, '..', 'jira-mcp-server', '.env') });
 
-// Import Jira MCP Server
-const { JiraMCPServer } = require('../jira-mcp-server/src/index.ts');
+// Import Jira MCP Server (using compiled JavaScript)
+const { JiraMCPServer } = await import('./dist/index.js');
 
 async function main() {
   try {
     console.log('🚀 Starting Jira Bulk Import for GRC Risk Module...\n');
 
     // Load structure file
-    const structurePath = path.join(__dirname, 'jira-structure.json');
+    const structurePath = path.join(__dirname, '..', 'Stories', 'jira-structure.json');
     if (!fs.existsSync(structurePath)) {
       throw new Error(`Structure file not found: ${structurePath}`);
     }
@@ -115,8 +120,8 @@ async function main() {
 }
 
 // Handle command line execution
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-module.exports = { main };
+export { main };
