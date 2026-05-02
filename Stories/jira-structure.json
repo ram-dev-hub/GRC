@@ -1,0 +1,224 @@
+{
+  "project": "GRC",
+  "epics": [
+    {
+      "key": "EPIC-1",
+      "name": "EPIC-1: Risk CRUD & Core Management",
+      "summary": "Establish foundational risk management with CRUD operations, automatic ID generation, and comprehensive risk tracking",
+      "description": "Enable Risk Officers to create, retrieve, update, and delete risks with automatic ID generation. Implement comprehensive risk property tracking, searchable inventory, lifecycle management, audit trails, and role-based access control.",
+      "stories": [
+        {
+          "key": "EPIC-1-STORY-1",
+          "summary": "Create Risk with Automatic ID Generation",
+          "description": "Implement automatic risk ID generation following company standard (ABC-DEPT## format) with unique constraints and validation",
+          "tasks": [
+            "Design risk ID generation algorithm (ABC-DEPT## format)",
+            "Implement database unique constraint on risk_id field",
+            "Create API endpoint POST /api/v1/risks with auto-ID generation",
+            "Add validation for required fields (description, owner, department)",
+            "Implement error handling for duplicate ID scenarios",
+            "Add audit logging for risk creation events"
+          ]
+        },
+        {
+          "key": "EPIC-1-STORY-2",
+          "summary": "List & Filter Risks with Sorting & Pagination",
+          "description": "Build searchable, filterable risk inventory with advanced filtering, sorting, and pagination capabilities",
+          "tasks": [
+            "Implement GET /api/v1/risks endpoint with query parameters",
+            "Add filtering by department, owner, status, date ranges",
+            "Implement sorting by risk_id, created_date, modified_date",
+            "Add pagination with limit/offset and total count",
+            "Create database indexes for filter/sort fields",
+            "Add response metadata (current_page, total_pages, links)"
+          ]
+        },
+        {
+          "key": "EPIC-1-STORY-3",
+          "summary": "Update Risk with Partial & Full Updates",
+          "description": "Support both partial (PATCH) and full (PUT) risk updates with validation and audit trails",
+          "tasks": [
+            "Implement PATCH /api/v1/risks/:id for partial updates",
+            "Implement PUT /api/v1/risks/:id for full updates",
+            "Add field-level validation for updates",
+            "Implement optimistic locking with ETag headers",
+            "Add audit logging for all field changes",
+            "Handle concurrent update conflicts"
+          ]
+        },
+        {
+          "key": "EPIC-1-STORY-4",
+          "summary": "Delete Risk with Soft-Delete & Audit Trail",
+          "description": "Implement soft-delete functionality with audit trails and restore capabilities",
+          "tasks": [
+            "Add deleted_at timestamp field to risks table",
+            "Implement DELETE /api/v1/risks/:id with soft-delete",
+            "Create POST /api/v1/risks/:id/restore endpoint",
+            "Add audit logging for delete/restore operations",
+            "Update list endpoints to exclude soft-deleted records",
+            "Implement hard delete for admin users (if needed)"
+          ]
+        },
+        {
+          "key": "EPIC-1-STORY-5",
+          "summary": "Retrieve Risk by ID with Full Details",
+          "description": "Create detailed risk retrieval endpoint with all risk properties and related data",
+          "tasks": [
+            "Implement GET /api/v1/risks/:id endpoint",
+            "Return complete risk object with all fields",
+            "Add error handling for non-existent risks (404)",
+            "Include related data (owner details, department info)",
+            "Add response caching with ETag headers",
+            "Implement access control validation"
+          ]
+        },
+        {
+          "key": "EPIC-1-STORY-6",
+          "summary": "Risk Status Lifecycle Management (Open → Closed)",
+          "description": "Implement risk status transitions with validation and workflow constraints",
+          "tasks": [
+            "Define valid status transitions (Open ↔ Closed)",
+            "Implement PATCH /api/v1/risks/:id/status endpoint",
+            "Add status transition validation",
+            "Update risk list filtering by status",
+            "Add audit logging for status changes",
+            "Implement status-based access controls"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "EPIC-2",
+      "name": "EPIC-2: Risk Analysis & Scoring",
+      "summary": "Implement comprehensive risk scoring with impact and likelihood analysis",
+      "description": "Build risk scoring framework with impact (1-5) and likelihood (1-5) scales, automatic risk score calculation (Impact × Likelihood), and detailed analysis documentation",
+      "stories": [
+        {
+          "key": "EPIC-2-STORY-7",
+          "summary": "Impact Scoring with Qualitative Descriptions",
+          "description": "Implement 5-point impact scale with financial, operational, compliance, reputational, and security impact categories",
+          "tasks": [
+            "Define impact scale (1=Minimal, 2=Minor, 3=Moderate, 4=Major, 5=Catastrophic)",
+            "Create PATCH /api/v1/risks/:id/impact endpoint",
+            "Add validation for impact_score (1-5 range)",
+            "Implement impact category breakdowns",
+            "Add qualitative descriptions for each level",
+            "Store impact analysis in database"
+          ]
+        },
+        {
+          "key": "EPIC-2-STORY-8",
+          "summary": "Likelihood Scoring with Risk Factors",
+          "description": "Implement 5-point likelihood scale with threat landscape, control effectiveness, incident history, and vulnerability factors",
+          "tasks": [
+            "Define likelihood scale (1=Rare, 2=Unlikely, 3=Possible, 4=Likely, 5=Almost Certain)",
+            "Create PATCH /api/v1/risks/:id/likelihood endpoint",
+            "Add weighted likelihood factors calculation",
+            "Implement likelihood validation (1-5 range)",
+            "Add qualitative descriptions for each level",
+            "Store likelihood analysis in database"
+          ]
+        },
+        {
+          "key": "EPIC-2-STORY-9",
+          "summary": "Automatic Risk Score Calculation (Impact × Likelihood)",
+          "description": "Implement automatic risk score calculation with severity levels and inherent vs residual score tracking",
+          "tasks": [
+            "Implement risk_score = impact_score × likelihood_score formula",
+            "Add severity levels (Low=1-5, Medium=6-12, High=13-18, Critical=19-25)",
+            "Create inherent_risk_score and residual_risk_score fields",
+            "Add automatic calculation triggers on score updates",
+            "Implement read-only risk_score field",
+            "Add risk score history tracking"
+          ]
+        },
+        {
+          "key": "EPIC-2-STORY-10",
+          "summary": "Impact Analysis Documentation",
+          "description": "Build detailed impact analysis with financial impact ranges, operational impact assessment, and compliance implications",
+          "tasks": [
+            "Create PATCH /api/v1/risks/:id/impact-analysis endpoint",
+            "Add financial_impact, operational_impact, compliance_impact fields",
+            "Implement impact analysis validation and storage",
+            "Add qualitative impact descriptions",
+            "Create impact analysis reporting views",
+            "Integrate with risk scoring calculations"
+          ]
+        },
+        {
+          "key": "EPIC-2-STORY-11",
+          "summary": "Likelihood Analysis Documentation",
+          "description": "Build detailed likelihood analysis with threat landscape assessment, control effectiveness evaluation, and incident history tracking",
+          "tasks": [
+            "Create PATCH /api/v1/risks/:id/likelihood-analysis endpoint",
+            "Add threat_landscape, control_effectiveness, incident_history fields",
+            "Implement likelihood analysis validation and storage",
+            "Add attacker_capability and vulnerability_status factors",
+            "Create likelihood analysis reporting views",
+            "Integrate with risk scoring calculations"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "EPIC-3",
+      "name": "EPIC-3: Risk Workflows & Approvals",
+      "summary": "Implement risk treatment workflows, approval processes, and remediation task management",
+      "description": "Build comprehensive risk treatment framework with ACCEPT/MITIGATE/AVOID/TRANSFER strategies, multi-level approval workflows, and remediation task tracking",
+      "stories": [
+        {
+          "key": "EPIC-3-STORY-12",
+          "summary": "Kanban Workflow State Transitions",
+          "description": "Implement 7-state Kanban workflow (Open → UnderReview → ReadyForReview → Approved → FinalClosed → Archived) with validation",
+          "tasks": [
+            "Define workflow states and valid transitions",
+            "Create PATCH /api/v1/risks/:id/workflow-state endpoint",
+            "Add workflow state validation and constraints",
+            "Implement state-based access controls",
+            "Add workflow state history tracking",
+            "Create workflow state transition reporting"
+          ]
+        },
+        {
+          "key": "EPIC-3-STORY-13",
+          "summary": "Treatment Strategy Selection & Execution",
+          "description": "Implement four treatment strategies (ACCEPT, MITIGATE, AVOID, TRANSFER) with strategy-specific workflows and tracking",
+          "tasks": [
+            "Define treatment strategies and requirements",
+            "Create PATCH /api/v1/risks/:id/treatment-strategy endpoint",
+            "Add strategy-specific validation and fields",
+            "Implement treatment strategy workflows",
+            "Add treatment strategy change tracking",
+            "Create treatment strategy reporting views"
+          ]
+        },
+        {
+          "key": "EPIC-3-STORY-14",
+          "summary": "Risk Approval Workflows with Multiple Stakeholders",
+          "description": "Build multi-level approval system with severity-based approver assignment and approval tracking",
+          "tasks": [
+            "Define approval matrix by risk severity",
+            "Create approval workflow tables and relationships",
+            "Implement POST /api/v1/risks/:id/approvals endpoint",
+            "Add approval status tracking and notifications",
+            "Implement approval hierarchy validation",
+            "Create approval workflow reporting"
+          ]
+        },
+        {
+          "key": "EPIC-3-STORY-15",
+          "summary": "Risk Remediation Task Management",
+          "description": "Implement remediation task creation, tracking, and completion with status updates and overdue handling",
+          "tasks": [
+            "Create remediation_tasks table and relationships",
+            "Implement POST /api/v1/risks/:id/remediation-tasks endpoint",
+            "Add task status tracking (Not Started, In Progress, Complete)",
+            "Implement task assignment and due date management",
+            "Add overdue task escalation logic",
+            "Create remediation task reporting views"
+          ]
+        }
+      ]
+    }
+  ]
+}
